@@ -1,0 +1,51 @@
+body {
+    float: top;
+    color: #fff;
+    background: linear-gradient(-45deg, Black,#4B4B49, #767672, #E7E6DD);
+    text-align: center;
+    
+    opacity: 0.89;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+
+h3 {
+    color: #eee;
+    font-weight: 100;
+}
+
+h5 {
+    color:#eee;
+    font-weight:300;
+}
+
+a,
+a:hover {
+    text-decoration: none;
+    color: #ddd;
+}
+
+
+
+
+
+
+
+
+
+
+
+

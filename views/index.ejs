@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Github Search</title>
+
+    <link rel='stylesheet' href='/stylesheets/style2.css' />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <style>
+
+
+
+        div {
+            text-align: center;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+
+<script>
+
+    (function () {  // working in local namespace
+        // the function that triggers an Ajax call
+        function getData() {
+            window.location = '/check';
+            var userInput = document.getElementById("userInput").value.trim();
+            if (userInput === "") //if the input is empty exception throw
+            {
+                var temp = document.getElementById('alertId2');
+                temp.style.display = "block";
+                setTimeout(function () {
+                    temp.style.display = 'none';
+                }, 5000);
+                return;
+            }
+
+
+            // fetch to the user git hub api
+            fetch('https://api.github.com/users/' + userInput)
+                .then(
+                    function (response) {
+                        document.getElementById("table").style.display = "block";
+                        document.getElementById("table2").style.display = "block";
+                        // handle the error
+                        if (response.status !== 200) {
+                            var temp = document.getElementById('alertId3');
+                            temp.style.display = "block";
+                            setTimeout(function () {
+                                temp.style.display = 'none';
+                            }, 5000);
+                            return;
+                        }
+
+                        // Examine the response and generate the HTML
+                        response.json().then(function (data) {
+                            var html = "<h2 class='alert alert-primary'>" + data.login + "</h2>";
+                            document.querySelector("#data").innerHTML = html;
+
+                            
+                            var html = "<img src=" + data.avatar_url + " class='card-img-top'>";
+                            document.querySelector("#pic").innerHTML = html;
+                        });
+                    }
+                )
+                .catch(function (err) {
+                    console.log('Fetch Error :', err);
+                });
+
+
+            // fetch to the user's followers git hub api
+            fetch('https://api.github.com/users/' + userInput + '/followers')
+                .then(
+                    function (response) {
+
+                        // handle the error
+                        if (response.status !== 200) {
+                            return;
+                        }
+
+                        // Examine the response and generate the HTML
+                        response.json().then(function (data) {
+                            var html = "<h2>Followers </h2>";
+                            document.querySelector("#follow").innerHTML = html;
+
+                            if (data.length === 0) {
+                                var temp = document.getElementById('alertId5');
+                                temp.style.display = "block";
+                                setTimeout(function () {
+                                    temp.style.display = 'none';
+                                }, 5000);
+                            }
+                            var newElement;
+                            for (var i = 0; i < data.length; i++) {
+                                newElement = document.createElement("a");
+                                newElement.innerHTML += "<li>" + data[i].login;
+                                newElement.href = 'https://github.com/' + data[i].login;
+                                document.getElementById("follow").appendChild(newElement);
+                            }
+                        });
+                    }
+                )
+                .catch(function (err) {
+                    console.log('Fetch Error :', err);
+                });
+
+            // fetch to the user's repos git hub api
+            fetch('https://api.github.com/users/' + userInput + '/repos')
+                .then(
+                    function (response) {
+
+                        if (response.status !== 200) {
+                            // document.querySelector("#repos").innerHTML = 'Looks like there was a problem. Status Code: ' +
+                            //         response.status;
+                            return;
+                        }
+
+                        // Examine the response and generate the HTML
+                        response.json().then(function (data) {
+                            var html = "<h2>Repositories </h2>";
+                            document.querySelector("#repos").innerHTML = html;
+                            if (data.length === 0) {
+                                var temp = document.getElementById('alertId4');
+                                temp.style.display = "block";
+                                setTimeout(function () {
+                                    temp.style.display = 'none';
+                                }, 5000);
+                            }
+
+                            var newElement;
+                            for (var i = 0; i < data.length; i++) {
+                                newElement = document.createElement("a");
+                                newElement.innerHTML += "<li>" + data[i].full_name;
+                                newElement.href = 'https://github.com/' + data[i].full_name;
+                                document.getElementById("repos").appendChild(newElement);
+                            }
+
+                            setInterval(function(event){ 
+                                window.stop();
+                            },5000);
+
+                        });
+                    }
+                )
+                .catch(function (err) {
+                    console.log('Fetch Error :', err);
+                });
+
+                
+        };
+
+        // the function send to the server the user input and ask for saving the user
+        // in the global list that the server contains
+        async function save() {
+            window.location = '/check';
+            var userInput = document.getElementById("userInput").value.trim();
+            fetch('https://api.github.com/users/' + userInput)
+                .then(
+                    function (response) {
+                        // handle the error
+                        if (response.status !== 200) {
+                          var temp = document.getElementById('alertId6');
+                          temp.style.display = "block";
+                          setTimeout(function () {
+                            temp.style.display = 'none';
+                          }, 5000);
+                            return;
+                        }
+                        response.json().then(async function (data) {
+                            if (data.login === null) {
+                              var temp = document.getElementById('alertId6');
+                              temp.style.display = "block";
+                              setTimeout(function () {
+                                temp.style.display = 'none';
+                              }, 5000);
+                                return;
+                            } else {
+                                var userName = document.getElementById("userInput").value.trim();
+                                const url = '/save';
+                                const data = {userName: userName};
+                                try {
+                                    const response = await fetch(url, {
+                                        method: 'POST',
+                                        body: JSON.stringify(data), // data can be `string` or {object}!
+                                        headers: {'Content-Type': 'application/json'}
+                                    });
+
+                                    const json = await response.json();
+                                    var child = document.getElementById("userHolder").children;
+                                    if (child.length === json.length) {
+                                        var temp = document.getElementById('alertId');
+                                        temp.style.display = "block";
+                                        setTimeout(function () {
+                                            temp.style.display = 'none';
+                                        }, 3000);
+                                    }
+                                    var html = "";
+                                    document.querySelector("#userHolder").innerHTML = html;
+                                    for (var i in json) {
+                                        var newElement = document.createElement("a");
+                                        newElement.innerHTML = "<button type='button' class='btn btn-primary btn-lg'>"+ json[i].login +"</button><br><br>";
+                                        //newElement.innerHTML = "<li>" + json[i].login + "</li>";
+                                        newElement.href = 'https://github.com/' + json[i].login;
+                                        document.getElementById("userHolder").appendChild(newElement);
+                                    }
+
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                }
+                            }
+
+                        });
+                    }
+                )
+                .catch(function (err) {
+                    console.log('Fetch Error :', err);
+                    return flag;
+                });
+        }
+
+        // the function send to the server the user input and ask for deleting the user
+        // in the global list that the server contains
+        async function del() {
+            window.location = '/check';
+            var userName = document.getElementById("userInput").value.trim();
+            if (userName == "")
+            {
+                var temp = document.getElementById('alertId7');
+                temp.style.display = "block";
+                setTimeout(function () {
+                temp.style.display = 'none';
+                }, 3000);
+            }
+            const url = '/delete';
+            const data = {userName: userName};
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(data), // data can be `string` or {object}!
+                    headers: {'Content-Type': 'application/json'}
+                });
+
+                const json = await response.json();
+
+                var child = document.getElementById("userHolder").children;
+                 if (child.length === json.length) {
+                 var temp = document.getElementById('alertId8');
+                 temp.style.display = "block";
+                 setTimeout(function () {
+                 temp.style.display = 'none';
+                 }, 3000);
+                 }
+
+                var html = "";
+                document.querySelector("#userHolder").innerHTML = html;
+                for (var i in json) {
+                    var newElement = document.createElement("a");
+                    //newElement.innerHTML = "<li>" + json[i].login + "</li>";
+                    newElement.innerHTML = "<button type='button' class='btn btn-primary btn-lg'>"+ json[i].login +"</button><br><br>";
+                    newElement.href = 'https://github.com/' + json[i].login;
+                    document.getElementById("userHolder").appendChild(newElement);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+        async function out() {
+                    window.location = '/logout';
+                }
+        async function readme() {
+                    window.location = '/readme';
+                }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector("#getdata").addEventListener("click", getData);
+            document.querySelector("#saveButton").addEventListener("click", save);
+            document.querySelector("#deleteButton").addEventListener("click", del);
+            document.querySelector("#logoutButton").addEventListener("click", out);
+        }, false);
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            document.getElementById("table").style.display = "block";
+            document.getElementById("table2").style.display = "block";
+            const url = '/';
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                const json = await response.json();
+                //show saved list
+                document.querySelector("#userHolder").innerHTML = "";
+                for (var i in json) {
+                    var newElement = document.createElement("a");
+                    //newElement.innerHTML = "<li>" + json[i].login + "</li>";
+                    newElement.innerHTML = "<button type='button' class='btn btn-primary btn-lg'>"+ json[i].login +"</button><br><br>";
+                    newElement.href = 'https://github.com/' + json[i].login;
+                    document.getElementById("userHolder").appendChild(newElement);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }, false);
+
+    })();
+
+</script>
+
+
+
+<!-- main headline -->
+
+<div id="mainTasks" class="jumbotron">
+    <h1 class="display-4"><i class="fa fa-github" style="font-size:68px;"></i> Github search</h1>
+    <p class="lead">Find your team and build projects together<br>
+    </p>
+    <hr class="my-4">
+    <p>Click to save/delete user.</p>
+    <a id="saveButton" class="btn btn-outline-secondary" role="button">Save</a>
+    <a id="deleteButton" class="btn btn-outline-danger" role="button">Delete</a>
+    <a id="logoutButton" class="btn btn-outline-danger" role="button" >Logout</a>
+    
+</div>
+
+
+<!-- user input holder and button insert -->
+
+<div class="form-inline" style="margin-left: 40.7% ; margin-right: 40.7% ; margin-bottom: 2%;">
+    <div class="form-group mx-sm-3 mb-2">
+      <input type="text" class="form-control" id="userInput" placeholder="Enter a github user...">
+    </div>
+    <button id="getdata" type="submit" class="btn btn-primary mb-2">Search User</button>
+</div>
+
+
+
+<div id="alertId" style="display: none" class="alert alert-danger" role="alert">
+    You can't insert the same user!
+</div>
+
+<div id="alertId2" style="display: none" class="alert alert-danger" role="alert">
+    You cant insert empty user!
+</div>
+
+<div id="alertId3" style="display: none" class="alert alert-danger" role="alert">
+    The user does not exist!
+</div>
+
+<div id="alertId4" style="display: none" class="alert alert-danger" role="alert">
+    The user does not have repos!
+</div>
+
+<div id="alertId5" style="display: none" class="alert alert-danger" role="alert">
+    The user does not have followers!
+</div>
+
+<div id="alertId6" style="display: none" class="alert alert-danger" role="alert">
+  You cant insert user that does not exist!
+</div>
+
+<div id="alertId7" style="display: none" class="alert alert-danger" role="alert">
+  You cant delete empty user!
+</div>
+
+<div id="alertId8" style="display: none" class="alert alert-danger" role="alert">
+  You cant delete user that does not exist!
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-12" id="Box1">
+            <div class="column" style="background-color:#eee">
+
+                <div id="table" class="card text-center" style="display: none">
+                    <div class="card-header">
+                        <div class="alert alert-primary" role="alert">
+                            <h4>User details</h4>
+                          </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="margin-right: 2%;" id="pic" class="card" style="width: 18rem;"></div>
+                        <div id="pic"></div>
+                        <div id="data"></div>
+                        <div id="follow"></div>
+                        <div id="repos"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-6 col-xs-12" id="Box2">
+            <div class="column" style="background-color:#eee">
+                <div id="table2" class="card text-center" style="display: none">
+                    <div class="card-header">
+                        <div class="alert alert-primary" role="alert">
+                            <h4>Saved users</h4>
+                          </div>
+                    </div>
+                    <div id="userHolder" class="card-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="particles-js"></div>
+<script src="jquery-3.4.1.min.js"></script>
+
+</body>
+</html>
