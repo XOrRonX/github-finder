@@ -4,7 +4,7 @@ Ajax, Promises, REST services: The project implements an SPA website which displ
 ### To use this project, please download ZIP file ex4-OrRon.zip.
 
 ### Login authentication
-![alt text](https://github.com/XOrRonX/Github-Search-App/blob/master/1_pic.PNG?raw=true)
+![alt text](https://github.com/XOrRonX/github-finder/blob/master/1.PNG?raw=true)
 
 ![alt text](https://github.com/XOrRonX/Github-Search-App/blob/master/%E2%80%8F%E2%80%8F2_pic.PNG?raw=true)
 
