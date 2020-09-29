@@ -9,4 +9,4 @@ Ajax, Promises, REST services: The project implements an SPA website which displ
 ![alt text](https://github.com/XOrRonX/github-finder/blob/master/2.PNG?raw=true)
 
 ### Github Search website
-![alt text](https://github.com/XOrRonX/Github-Search-App/blob/master/%E2%80%8F%E2%80%8F3_pic.PNG?raw=true)
+![alt text](https://github.com/XOrRonX/github-finder/blob/master/3.PNG?raw=true)
